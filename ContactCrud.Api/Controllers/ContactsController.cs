@@ -52,7 +52,7 @@ namespace ContactCrud.Api.Controllers
 
             return Ok($"o contato de {request.Name} Foi Atualizado");
         }
-        [HttpDelete("[id]")]
+        [HttpDelete("{id}")]
         public ActionResult Delete(int id) { 
             
             var contactDeleted = _repository.Delete(id);
