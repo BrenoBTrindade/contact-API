@@ -97,5 +97,14 @@ public class ContactControllerTest : IClassFixture<WebApplicationFactory<Program
         Assert.Equal(request.Name, content.Name);
         Assert.DoesNotMatch(request.Name, content.Email);
     }
+    [Fact]
+    public async Task DeleteTest()
+    {
+        _repositoryMock.Setup(repo => repo.Delete(1)).Returns(true);
+        var response = await _client.DeleteAsync("/contacts/1");
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        _repositoryMock.Verify(repo => repo.Delete(1), Times.Once);
+    }
 }
 
