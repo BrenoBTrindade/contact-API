@@ -40,5 +40,26 @@ namespace ContactCrud.Api.Controllers
             return CreatedAtAction("GetById", new { id = contact.Id }, contact);
 
         }
+        [HttpPut("{id}")]
+        public ActionResult Update(int id, ContactRequest request)
+        {
+            var contact = new Contact(id, request);
+
+            var updated = _repository.Update(id, contact);
+
+            if (!updated)
+                return NotFound("Contact not found");
+
+            return Ok($"o contato de {request.Name} Foi Atualizado");
+        }
+        [HttpDelete("[id]")]
+        public ActionResult Delete(int id) { 
+            
+            var contactDeleted = _repository.Delete(id);
+
+            if (!contactDeleted) return NotFound("Contato não encontrado");
+
+            return NoContent();
+        }
     }
 }
