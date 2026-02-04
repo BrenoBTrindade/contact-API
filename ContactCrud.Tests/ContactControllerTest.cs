@@ -98,6 +98,28 @@ public class ContactControllerTest : IClassFixture<WebApplicationFactory<Program
         Assert.DoesNotMatch(request.Name, content.Email);
     }
     [Fact]
+    public async Task UpdateTest()
+    {
+        var request = new ContactRequest
+        {
+            Name = "Breno",
+            Phone = "91981564455",
+        };
+
+        _repositoryMock
+        .Setup(repo => repo.Update(1, It.IsAny<Contact>()))
+        .Returns(true);
+
+        var response = await _client.PutAsJsonAsync("/contacts/1", request);
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal("o contato de Breno Foi Atualizado", content);
+        _repositoryMock.Verify(r => r.Update(1, It.IsAny<Contact>()), Times.Once);
+
+    }
+    [Fact]
     public async Task DeleteTest()
     {
         _repositoryMock.Setup(repo => repo.Delete(1)).Returns(true);
