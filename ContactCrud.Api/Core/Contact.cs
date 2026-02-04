@@ -20,5 +20,8 @@ namespace ContactCrud.Api.Core
             CreatedAt = request.CreatedAt;
             UpdatedAt = request.UpdatedAt;
         }
+
+        public Contact() { }
     }
+
 }

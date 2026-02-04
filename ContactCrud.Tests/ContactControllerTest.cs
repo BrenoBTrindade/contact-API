@@ -57,19 +57,11 @@ public class ContactControllerTest : IClassFixture<WebApplicationFactory<Program
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var content = await response.Content.ReadFromJsonAsync<List<ContactJson>>();
+        var content = await response.Content.ReadFromJsonAsync<List<Contact>>();
         Assert.NotNull(content);
 
         Assert.Equal(contacts.Count, content.Count);
         Assert.Equal(contacts[0].Id, content[0].Id);
         Assert.Equal(contacts[1].Id, content[1].Id);
     }
-}
-
-public class ContactJson
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Email { get; set; } = "";
-    public string Phone { get; set; } = "";
 }
