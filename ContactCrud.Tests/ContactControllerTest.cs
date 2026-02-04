@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Xunit;
 using ContactCrud.Api.Repositories;
-using ContactCrud.Api.Core;
 using ContactCrud.Api.Requests;
+using ContactCrud.Api.Controllers;
+using ContactCrud.Api.Core;
+
 
 namespace ContactCrud.Tests;
 
@@ -35,33 +37,39 @@ public class ContactControllerTest : IClassFixture<WebApplicationFactory<Program
     [Fact]
     public async Task GetAllTest()
     {
-        var contacts = new List<Contact>
-        {
-            new Contact(1, new ContactRequest
-            {
-                Name = "Breno",
-                Email = "Breno@email.com",
-                Phone = "91981561194"
-            }),
-            new Contact(2, new ContactRequest
-            {
-                Name = "Cisley",
-                Email = "Cisley@email.com",
-                Phone = "91981564194"
-            }),
-        };
-
-        _repositoryMock.Setup(repo => repo.GetAll()).Returns(contacts);
+        _repositoryMock.Setup(repo => repo.GetAll())
+                       .Returns(TestData.Contacts);
 
         var response = await _client.GetAsync("/contacts");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
         var content = await response.Content.ReadFromJsonAsync<List<Contact>>();
         Assert.NotNull(content);
 
-        Assert.Equal(contacts.Count, content.Count);
-        Assert.Equal(contacts[0].Id, content[0].Id);
-        Assert.Equal(contacts[1].Id, content[1].Id);
+        Assert.Equal(TestData.Contacts.Count, content.Count);
+        Assert.Equal(TestData.Contacts[0].Id, content[0].Id);
+        Assert.Equal(TestData.Contacts[1].Id, content[1].Id);
+    }
+
+    [Fact]
+    public async Task GetByIdTest()
+    {
+        _repositoryMock.Setup(repo => repo.GetById(1))
+               .Returns(TestData.Contacts.First(c => c.Id == 1));
+
+
+        var response = await _client.GetAsync("/contacts/1");
+
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadFromJsonAsync<Contact>();
+        Assert.NotNull(content);
+
+        Assert.Equal(TestData.Contacts.First(c => c.Id == 1).Id, content.Id);
+        Assert.Equal(TestData.Contacts.First(c => c.Id == 1).Name, content.Name);
+        Assert.Equal(TestData.Contacts.First(c => c.Id == 1).Email, content.Email);
+        Assert.Equal(TestData.Contacts.First(c => c.Id == 1).Phone, content.Phone);
+        Assert.DoesNotMatch(TestData.Contacts.First(c => c.Id == 2).Phone, content.Phone);
     }
 }
+
