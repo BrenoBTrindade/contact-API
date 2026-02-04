@@ -35,21 +35,24 @@ namespace ContactCrud.Api.Repositories
             return true;
         }
 
-        public bool Update(int id, Contact UpdatedContact)
+        public bool Update(int id, Contact updatedContact)
         {
-            var existingContact = GetById(id);
+            var existing = GetById(id);
+            if (existing == null) return false;
 
-            if (existingContact == null)
-            {
-                return false;
-            }
-            existingContact.Name = UpdatedContact.Name;
-            existingContact.Email = UpdatedContact.Email;
-            existingContact.Phone = UpdatedContact.Phone;
-            existingContact.UpdatedAt = DateTime.UtcNow;
+            if (!string.IsNullOrWhiteSpace(updatedContact.Name))
+                existing.Name = updatedContact.Name;
 
+            if (!string.IsNullOrWhiteSpace(updatedContact.Email))
+                existing.Email = updatedContact.Email;
+
+            if (!string.IsNullOrWhiteSpace(updatedContact.Phone))
+                existing.Phone = updatedContact.Phone;
+
+            existing.UpdatedAt = DateTime.UtcNow;
             return true;
         }
+
 
         public bool Delete(int id)
         {
