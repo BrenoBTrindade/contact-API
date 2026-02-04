@@ -71,5 +71,31 @@ public class ContactControllerTest : IClassFixture<WebApplicationFactory<Program
         Assert.Equal(TestData.Contacts.First(c => c.Id == 1).Phone, content.Phone);
         Assert.DoesNotMatch(TestData.Contacts.First(c => c.Id == 2).Phone, content.Phone);
     }
+    [Fact]
+    public async Task CreateTest()
+    {
+        var request = new ContactRequest
+        {
+            Name = "Luke",
+            Email = "luke@email.com",
+            Phone = "91988888888"
+        };
+
+        _repositoryMock.Setup(repo => repo.GetNextId())
+               .Returns(3);
+
+        _repositoryMock.Setup(repo => repo.Create(It.IsAny<Contact>()));
+
+        var response = await _client.PostAsJsonAsync("/contacts", request);
+
+        Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
+        
+        var content = await response.Content.ReadFromJsonAsync<Contact>();
+        Assert.NotNull(content);
+
+        Assert.Equal(3, content!.Id);
+        Assert.Equal(request.Name, content.Name);
+        Assert.DoesNotMatch(request.Name, content.Email);
+    }
 }
 
