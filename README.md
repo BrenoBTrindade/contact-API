@@ -20,7 +20,7 @@ Ao utilizar este projeto, você concorda com as diretrizes de boas práticas de 
 
 ---
 
-## Entregáveis
+## Como rodar o projeto
 ---
 
 <details>
